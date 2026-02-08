@@ -6,12 +6,12 @@ IF not "%1" == "" (
     GOTO :%1
 )
 
-SET "tasks=6"
+SET "tasks=12"
 
 :: must be even number of threads
 CALL :CREATE_THREADS %tasks%
 
-ECHO %tasks% Task(s) to Complete
+ECHO %tasks% Tasks to Complete
 ECHO Sequential
 FOR /L %%L in (1, 1, %tasks%) DO (
     FOR /L %%G in (1, 1, 20000) DO (
@@ -58,7 +58,7 @@ FOR /L %%Q in (%start%, -1, 0) DO (
     CALL :CREATE_THREADS_LOOP %%Q
 
 )
-SET "branch.0=(!branch.0!)^|"%~F0" MAIN !has.child!"
+SET "branch.0=(!branch.0!)^| "%~F0" MAIN !has.child!"
 ENDLOCAL & SET "threads=%branch.0%"
 GOTO :EOF
 
