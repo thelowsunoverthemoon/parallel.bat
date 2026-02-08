@@ -6,11 +6,14 @@ IF not "%1" == "" (
     GOTO :%1
 )
 
-:: must be even number of threads
-CALL :CREATE_THREADS 6
+SET "tasks=6"
 
+:: must be even number of threads
+CALL :CREATE_THREADS %tasks%
+
+ECHO %tasks% Task(s) to Complete
 ECHO Sequential
-FOR /L %%L in (1, 1, 6) DO (
+FOR /L %%L in (1, 1, %tasks%) DO (
     FOR /L %%G in (1, 1, 20000) DO (
         SET /A "seq.sum+=%%G"
     )
@@ -67,8 +70,7 @@ SET /A "need.child=%1 %% (2 * stride)"
 IF "!need.child!" == "0" (
     SET /A "index=%1 + stride"
     IF !index! GEQ %total% (
-    
-        SET "branch.%1=((!branch.%1!)^|"%~F0" THREAD !has.child! %1)"
+        SET "branch.%1=((!branch.%1!)^|START /B "" "%~F0" THREAD !has.child! %1)"
         GOTO :EOF
     )
     SET /A "has.child+=1"
@@ -84,6 +86,6 @@ IF "!need.child!" == "0" (
 IF "!has.child!" == "0" (
     SET "branch.%1=START /B "" "%~F0" THREAD !has.child! %1"
 ) else (
-    SET "branch.%1=((!branch.%1!)^|"%~F0" THREAD !has.child! %1)"
+    SET "branch.%1=((!branch.%1!)^|START /B "" "%~F0" THREAD !has.child! %1)"
 )
 GOTO :EOF
